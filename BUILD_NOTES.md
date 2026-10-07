@@ -8,6 +8,7 @@ Built as a new project on October 7, 2026 for Hacktoberfest Week 1. Codex assist
 - A responsive web form and printable field card in a single HTML file.
 - Local Ollama inference with the open-weight `gemma3:1b` model.
 - A 31-second silent demo made from screenshots of the running app. The video shows the actual selection, loading, and generated-card states. It does not show an outdoor field visit.
+- The screenshots, slide-building script, and video encoder source are kept in `demo/production/` for reproducibility.
 
 ## Verification completed
 

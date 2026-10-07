@@ -61,6 +61,8 @@ You can also show the network independence by switching Wi-Fi off *after* downlo
 - `SAMPLE_CARD.md` — one actual local-model result for a quick preview
 - `BUILD_NOTES.md` — how this was built and verified
 - `demo/` — silent MP4 walkthrough and cover image
+- `demo/production/` — source screenshots and scripts used to assemble the demo video
+- `releases/` — local downloadable copies and ZIP archive (ignored by Git)
 
 ## Submit to Week 1
 
