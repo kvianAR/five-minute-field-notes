@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Five-Minute Field Notes</title>
+  <style>
+    :root { color-scheme: light; --ink:#22332b; --green:#345b43; --paper:#f8f5e9; --line:#bac8b5; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#e7eddf; color:var(--ink); font:16px/1.5 system-ui,-apple-system,sans-serif; }
+    main { max-width:820px; margin:35px auto; padding:0 20px 40px; }
+    header { padding:26px 30px; background:#345b43; color:white; border-radius:18px 18px 0 0; }
+    .eyebrow { margin:0; letter-spacing:.13em; text-transform:uppercase; font-size:.75rem; font-weight:700; opacity:.85; }
+    h1 { margin:8px 0; font:normal clamp(2.2rem,6vw,3.4rem)/1.05 Georgia,serif; }
+    header p:last-child { margin-bottom:0; max-width:580px; }
+    .panel { background:var(--paper); padding:25px 30px; border:1px solid var(--line); }
+    .intro { margin-top:0; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+    label { display:block; font-weight:650; }
+    select { display:block; width:100%; margin-top:6px; padding:11px; border:1px solid #869b85; border-radius:9px; background:white; color:var(--ink); font:inherit; }
+    button { margin-top:22px; padding:12px 19px; border:0; border-radius:9px; background:var(--green); color:white; font:inherit; font-weight:700; cursor:pointer; }
+    button:hover { background:#264631; } button:disabled { opacity:.55; cursor:wait; }
+    button.secondary { background:#e2e9dd; color:var(--green); margin-left:8px; }
+    .note { color:#506255; font-size:.9rem; }
+    #status { min-height:1.5em; margin:13px 0 0; }
+    #card { margin-top:20px; border-radius:14px; box-shadow:0 8px 24px #1f382319; }
+    #card[hidden] { display:none; }
+    #card h2 { margin:0; font:normal 2rem Georgia,serif; }
+    #card ol { padding-left:1.4em; } #card li { margin:13px 0; padding-left:5px; }
+    .leave { padding:13px; background:#e3ebdd; border-radius:8px; font-weight:650; }
+    footer { padding:12px 30px 24px; background:var(--paper); border:1px solid var(--line); border-top:0; border-radius:0 0 18px 18px; }
+    @media(max-width:580px) { .grid { grid-template-columns:1fr; } header,.panel,footer { padding-left:20px; padding-right:20px; } }
+    @media print { body { background:white; } main { margin:0; padding:0; } header,#form-panel,footer,.actions { display:none; } #card { display:block!important; box-shadow:none; border:0; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="eyebrow">A tiny local AI experiment · Touch Grass</p>
+    <h1>Five-Minute Field Notes</h1>
+    <p>Make one small observation card. Then put your screen away and go notice the real world.</p>
+  </header>
+  <section id="form-panel" class="panel">
+    <p class="intro">Pick a place you can already access. The AI suggests observations, never a route or a promise about what's there.</p>
+    <form id="form">
+      <div class="grid">
+        <label>Where will you be?<select name="setting"><option value="park">Park</option><option value="street">Quiet street or sidewalk</option><option value="garden">Garden</option><option value="balcony">Balcony or doorstep</option><option value="campus">Campus</option></select></label>
+        <label>What will you notice?<select name="interest"><option value="sounds">Sounds</option><option value="shapes">Shapes</option><option value="textures">Textures</option><option value="colors">Colors</option></select></label>
+        <label>How will you explore?<select name="access"><option value="walking">Slow stroll</option><option value="seated">From one seated spot</option></select></label>
+        <label>How long?<select name="minutes"><option value="5">5 minutes</option><option value="10">10 minutes</option><option value="15">15 minutes</option></select></label>
+      </div>
+      <button id="make" type="submit">Make my field card</button>
+      <p id="status" role="status" aria-live="polite"></p>
+    </form>
+    <p class="note">Runs on your Mac with Ollama and Gemma 3. No sign-in, location permission, or remote AI service.</p>
+  </section>
+  <section id="card" class="panel" hidden aria-live="polite">
+    <p class="eyebrow">Your field card</p>
+    <h2 id="title"></h2>
+    <ol id="cues"></ol>
+    <p><strong>When you return:</strong> <span id="reflection"></span></p>
+    <p class="leave">Take this card outside. Stay somewhere safe and accessible, and look up from the screen.</p>
+    <div class="actions"><button class="secondary" type="button" onclick="window.print()">Print or save card</button></div>
+    <p class="note" id="model"></p>
+  </section>
+  <footer class="note">Made for Hacktoberfest 2026 · Observe without disturbing plants or animals.</footer>
+</main>
+<script>
+  const form = document.querySelector('#form');
+  const status = document.querySelector('#status');
+  const make = document.querySelector('#make');
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    make.disabled = true; status.textContent = 'Gemma is writing your card on this Mac…';
+    document.querySelector('#card').hidden = true;
+    const data = Object.fromEntries(new FormData(form)); data.minutes = Number(data.minutes);
+    try {
+      const response = await fetch('/api/card', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Could not make a card.');
+      document.querySelector('#title').textContent = result.title;
+      const list = document.querySelector('#cues'); list.replaceChildren();
+      for (const cue of result.cues) { const li = document.createElement('li'); li.textContent = cue; list.append(li); }
+      document.querySelector('#reflection').textContent = result.reflection;
+      document.querySelector('#model').textContent = 'Generated locally by ' + result.model;
+      document.querySelector('#card').hidden = false;
+      status.textContent = 'Ready. Take the card outside.';
+      document.querySelector('#card').scrollIntoView({behavior:'smooth'});
+    } catch (error) { status.textContent = error.message; }
+    finally { make.disabled = false; }
+  });
+</script>
+</body>
+</html>
