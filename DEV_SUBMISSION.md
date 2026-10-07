@@ -43,7 +43,7 @@ The browser sends four fixed choices to a Python server running on `127.0.0.1`. 
 
 AI is the core of this project: without Gemma's generated cues, there is no field card. The model combines the selected place, sense, and pace into a specific little activity. The interface then gets out of the way.
 
-For a reproducible test, I used the balcony / sounds / seated / five-minute selection and received a three-cue card from local Ollama. The code also checks for a valid card and rejects an incomplete response.
+In a reproducible test on my Mac, the balcony / sounds / seated / five-minute selection returned a three-cue card from local Ollama. The code also checks for a valid card and rejects an incomplete response.
 
 ## Why Does Open Innovation Matter?
 
