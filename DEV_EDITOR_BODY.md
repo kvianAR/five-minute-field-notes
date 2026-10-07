@@ -23,6 +23,8 @@ The app is intentionally small: `app.py` is the local Python server and Ollama c
 To run it on a Mac, install Ollama, then run:
 
 ```sh
+git clone https://github.com/kvianAR/five-minute-field-notes.git
+cd five-minute-field-notes
 ollama pull gemma3:1b
 python3 app.py
 ```
