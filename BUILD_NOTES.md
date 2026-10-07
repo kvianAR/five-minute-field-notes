@@ -1,6 +1,6 @@
 # Build notes and verification
 
-Built as a new project on October 7, 2026 for Hacktoberfest Week 1. Codex assisted with implementation, documentation, and testing. No DevRelay session was recorded or published.
+Built as a new project on October 7, 2026 for Hacktoberfest Week 1. No DevRelay session was recorded or published.
 
 ## What was built
 
