@@ -2,6 +2,7 @@
 
 A tiny local web app that turns a nearby place and a chosen sense into a three-step outdoor observation card. Make the card, print it or remember it, and put the screen away. Built during the Hacktoberfest 2026 Week 1 **Touch Grass** window.
 
+
 **[Watch the 31-second silent demo](demo/five-minute-field-notes-demo.mp4)** · [Build notes and checks](BUILD_NOTES.md)
 
 ## What the AI does
